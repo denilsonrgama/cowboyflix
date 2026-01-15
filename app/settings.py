@@ -16,8 +16,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET_KEY seguro (use variável de ambiente)
 SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 
-# DEBUG desligado em produção
-DEBUG = config('DEBUG', default=True, cast=bool)
+# DEBUG desligado em produção - alterar para true apenas em desenvolvimento
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Hosts permitidos
 ALLOWED_HOSTS = ['*']
@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'genres'
     
 ]
 
