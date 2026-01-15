@@ -1,0 +1,49 @@
+1) PARA O ARQUIVO .ENV:
+
+# .env
+# Banco de dados PostgreSQL local
+DB_NAME=cowboyflixdb
+DB_USER=postgres
+DB_PASSWORD=adminPostgres
+DB_HOST=127.0.0.1
+DB_PORT=5432
+
+# Debug
+DEBUG=True
+
+2) INSTALE DEPENDENCIAS:
+pip install python-dotenv psycopg2-binary
+
+3) INSIRIR NO ARQUIVO SETTINGS.PY
+
+a) no topo:
+
+import os
+from pathlib import Path
+from decouple import config
+from dotenv import load_dotenv
+
+
+b) SUBSTITUIR O BLOCO DATABASE:
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='127.0.0.1'),
+        'PORT': config('DB_PORT', default='5432'),
+    }
+}
+
+C) CONFIGURE O SECRET_KEY E DEBUG
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG') == 'True'
+
+obs: verificque o settings.py de exemplo:
+a) settings_default
+
+D) RODE O MIGRATE
+python manage.py migrate
