@@ -8,8 +8,7 @@ class GenreAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
-        'timestamp',
-        'description',
+        'timestamp',        
         
     )
     list_filter = (
