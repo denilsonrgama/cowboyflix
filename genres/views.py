@@ -1,27 +1,36 @@
 import json
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseNotAllowed, JsonResponse    
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse    
 from genres.models import Genre
 
 
 @csrf_exempt
-def genre_view(request):
-    match request.method:
-        case "GET":
-            genres = Genre.objects.all()
-            data = [
-                {"id": genre.id, "name": genre.name}
-                for genre in genres
-            ]
-            return JsonResponse(data, safe=False)
+def genre_create_list_view(request):
 
-        case "POST":
+    if request.method == "GET":
+            genres = Genre.objects.all()
+            data = [{"id": genre.id, "name": genre.name} for genre in genres]
+            #return JsonResponse(data, safe=False,status=200)
+            return JsonResponse({"total": len(data),"results": data},status=200)
+
+
+    elif request.method == "POST":
             data = json.loads(request.body.decode("utf-8"))
-            new_genre = Genre(name=data['name'])
-            new_genre.save()
-            return JsonResponse(
-                {"id": new_genre.id, "name": new_genre.name}, status=201 #criado com sucesso
-            )  
-        case _:
-            return HttpResponseNotAllowed(["GET"])
-             
+
+            created = []
+            for item in data:
+                genre, is_created = Genre.objects.get_or_create(name=item["name"])
+                if is_created:
+                    created.append({"id": genre.id, "name": genre.name})
+
+            return JsonResponse({"created": created,"total_created": len(created)},status=201)
+        
+@csrf_exempt
+def genre_detail_view(request, pk):
+    genre = get_object_or_404(Genre, pk=pk)
+
+    if request.method == "GET":
+            data = {"id": genre.id, "name": genre.name}
+            return JsonResponse(data, status=200)
+    
